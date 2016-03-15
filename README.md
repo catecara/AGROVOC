@@ -1,3 +1,3 @@
-# agrovoc
+# AGROVOC
 
 This is a repository for the documents produced within AGROVOC. 
