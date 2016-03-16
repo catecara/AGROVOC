@@ -10,7 +10,9 @@ select * { ?a a owl:ObjectProperty  }
 
 ### Concepts with at least 2 instances of the same property
 
-SELECT ?s ?o1 ?o2
-WHERE {?s skos:definition ?o1.
-       ?s skos:definition ?o2
+SELECT ?s ?o1 ?o2  
+WHERE {?s skos:definition ?o1.  
+       ?s skos:definition ?o2  
       FILTER (?o1 != ?o2) } 
+      
+      
