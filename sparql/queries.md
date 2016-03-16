@@ -1,5 +1,18 @@
 # Some reusable SPARQL queries for AGROVOC
 
+## Indexing - AGRIS
+
+### Extract Agrovoc concepts used in AGRIS, grouped by concept
+
+prefix skosxl: <http://www.w3.org/2008/05/skos-xl#>    
+
+select ?concept (count(?concept) as ?pCount)     
+where {?doc dct:subject ?concept .    
+            filter regex (str(?concept), "agrovoc")   
+}   
+group by ?concept ORDER BY DESC(?pCount)   
+LIMIT 10000   
+
 
 ## Languages 
 
@@ -22,6 +35,23 @@ WHERE {
        ?concept <http://www.w3.org/2008/05/skos-xl#altLabel> ?xlabelen  .    
        ?xlabelen <http://www.w3.org/2008/05/skos-xl#literalForm> ?stringen .    
        FILTER (lang(?stringen) ="en") .     
+}
+
+### Extract a linguistic version of Agrovoc (here FR and EN)
+
+Construct { ?sConcept ?p ?o . ?o ?p2 ?o2 }     
+where {    
+	{   
+		?father skos:topConceptOf <http://aims.fao.org/aos/agrovoc> .   
+  		?sConcept skos:broader* ?father .     
+ 		?sConcept ?p ?o .     
+   		FILTER((!isLiteral(?o) || lang(?o) = '' || langMatches(lang(?o), 'fr') || langMatches(lang(?o), 'en')) &&  
+  		(isLiteral(?o) || !CONTAINS(str(?o), 'xl') || CONTAINS(str(?o), 'xl_fr') || CONTAINS(str(?o), 'xl_en')) ) .   			
+ 		OPTIONAL {   
+ 			?o ?p2 ?o2 .   
+			FILTER((!isLiteral(?o2) || lang(?o2) = '' || langMatches(lang(?o2), 'fr') || langMatches(lang(?o2), 'en')) &&  (isLiteral(?o2) || !CONTAINS(str(?o2), 'xl') || CONTAINS(str(?o2), 'xl_fr') || CONTAINS(str(?o2), 'xl_en')) ) . 
+				}    
+	}   
 }
 
 
